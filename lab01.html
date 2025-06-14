@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+     <a-marker type="pattern" url="pattern-rolling.patt">
+
+     <a-entity> 
+      <a-entity id="roller" position="0 4.511 -2.322" animation__move="property: position; to: 0 0 3; dur: 3000; loop: true; easing: linear">    
+       
+	<a-cylinder position="0 0 0" rotation="0 0 90" radius="2" height="4" src= "wooden.jpg"  shadow="cast: true" animation="property: rotation; to: 3600 0 90; dur: 10000; easing: linear; loop: true"></a-cylinder>
+       
+	<!-- N Нормальна сила (жовта стрілка вниз) -->
+	<a-entity>
+	    <a-entity line="start:0 0 0; end: 0 -3 -0; color: yellow"></a-entity>
+	    <a-cone position="0 -3 -0" rotation="0 0 180" height="0.3" radius-bottom="0.12" radius-top="0" color="yellow"></a-cone>
+  	    <a-text value="N" color="yellow" position="0 2.6 1.5" scale="1 1 1" font="segoescb-msdf.json"></a-text>
+        </a-entity>
+        <!--  сила тяжіння (синя стрілка перпендикулярна до площини) -->
+        <a-entity>
+            <a-entity line="start: 0 0 0; end: 0 6.72 -1.056; color: blue"></a-entity>
+            <a-cone position="0 6.72 -1.056" rotation="30 0 0" height="0.3" radius-bottom="0.12" radius-top="0" color="blue"></a-cone>
+	    <a-text value="Fтяж." color="blue" position="0 7.0 -1.0" scale="1 1 1" font="segoescb-msdf.json"></a-text>
+	</a-entity>
+        <!-- Сила (червона, проти ковзання) -->
+        <a-entity>
+            <a-entity line="start: 0 0 0; end: 0 1.8 -3.7; color: red"></a-entity>
+            <a-cone position="0 1.8 -3.7" rotation="-30 73 -60" height="0.5" radius-bottom="0.2" radius-top="0" color="red"></a-cone>
+            <a-text value="F" color="red" position="0 2.1 -3.5" scale="1 1 1" font="segoescb-msdf.json"></a-text>
+        </a-entity>
+        <!-- Сила тертя (помаранчева стрілка вгору по площині) -->
+        <a-entity>
+            <a-entity line="start: 0 0 0; end: 0 -3 4.3; color: orange"></a-entity>
+            <a-cone position="0 -3 4.3" rotation="135 0 0" height="0.5" radius-bottom="0.2" radius-top="0" color="orange"></a-cone>
+            <a-text value="Fтерт.коч" color="orange" position="0.5 -2.8 4.5" scale="1 1 1" font="segoescb-msdf.json"></a-text>
+        </a-entity>
+      </a-entity> 
+        <a-plane position="0 0 0" rotation="-50 0 0" width="15" height="15" src= "https://raw.githubusercontent.com/aframevr/sample-assets/refs/heads/master/assets/images/wood/hardwood2_diffuse.jpg" shadow="receive: true"></a-plane>
+        <a-light type="directional" intensity="1.1" color="#ffffff" position="5 10 5" rotation="-45 45 0" castShadow="true" shadow-camera-top="10" shadow-camera-bottom="-10" shadow-camera-left="-10" shadow-camera-right="10" shadow-map-height="2048" shadow-map-width="2048"></a-light>
+        <a-light type="ambient" color="#4d94ff" intensity="0.5"></a-light>
+     </a-entity>
+     </a-marker>
+	<a-entity position="0 2 8">
+        <a-camera></a-camera>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
+
+
+
