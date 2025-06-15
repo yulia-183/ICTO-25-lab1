@@ -5,9 +5,8 @@ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const scene = new THREE.Scene();
-
   const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
-  // У AR камера керується пристроєм, позиціювати вручну не треба
+  camera.position.set(0, 2, 5); // ВІДДАЛИЛИ КАМЕРУ
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -26,38 +25,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const woodTexture = textureLoader.load("https://threejs.org/examples/textures/wood.jpg");
   const planeTexture = textureLoader.load("https://threejs.org/examples/textures/hardwood2_diffuse.jpg");
 
-  // Підлога (площина)
+  // Підлога
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
+    new THREE.PlaneGeometry(15, 15),
     new THREE.MeshStandardMaterial({ map: planeTexture })
   );
-  plane.rotation.x = -Math.PI / 12; // ≈ -15° нахил
-  plane.position.set(0, -1, 0);
+  plane.rotation.x = -Math.PI / 9; // менш крутий нахил (20°)
+  plane.position.set(0, -1.5, -2);
   scene.add(plane);
 
   // Циліндр
-  const rollerRadius = 1;
+  const rollerRadius = 2;
   const roller = new THREE.Mesh(
-    new THREE.CylinderGeometry(rollerRadius, rollerRadius, 3, 32),
+    new THREE.CylinderGeometry(rollerRadius, rollerRadius, 4, 32),
     new THREE.MeshStandardMaterial({ map: woodTexture })
   );
   roller.rotation.z = Math.PI / 2;
-  roller.scale.set(0.3, 0.3, 0.3);
-  roller.position.set(0, 0.4, 0);
+  roller.scale.set(0.2, 0.2, 0.2);
+  roller.position.set(0, 0.5, 0);
   scene.add(roller);
 
-  // Функція створення стрілок
+  // Стрілки
   const createArrow = (start, end, color) => {
     const dir = new THREE.Vector3().subVectors(end, start).normalize();
     const length = start.distanceTo(end);
     return new THREE.ArrowHelper(dir, start, length, color, 0.3, 0.15);
   };
 
-  // Додаємо стрілки з меншими розмірами
-  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -2, 0), 0xffff00)); // N
-  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 4, -0.6), 0x0000ff)); // Fтяж
-  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1.2, -2.5), 0xff0000)); // F
-  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -2, 3), 0xffa500)); // F тертя
+  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -3, 0), 0xffff00)); // N
+  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 6.72, -1.056), 0x0000ff)); // Fтяж
+  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1.8, -3.7), 0xff0000)); // F
+  scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -3, 4.3), 0xffa500)); // F тертя
 
   // Освітлення
   const dirLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -65,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   scene.add(dirLight);
   scene.add(new THREE.AmbientLight(0x4d94ff, 0.5));
 
-  // Завантажуємо шрифт і додаємо текстові мітки
+  // Текстові мітки
   const fontLoader = new FontLoader();
   fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
     const createLabel = (text, position, color) => {
@@ -80,17 +78,17 @@ document.addEventListener("DOMContentLoaded", () => {
       scene.add(mesh);
     };
 
-    createLabel("N", new THREE.Vector3(0, 1.8, 1), 0xffff00);
-    createLabel("Fтяж", new THREE.Vector3(0, 4.5, -0.7), 0x0000ff);
-    createLabel("F", new THREE.Vector3(0, 1.5, -2.3), 0xff0000);
-    createLabel("Fтертя", new THREE.Vector3(0.3, -1.8, 3.3), 0xffa500);
+    createLabel("N", new THREE.Vector3(0, 2.6, 1.5), 0xffff00);
+    createLabel("Fтяж", new THREE.Vector3(0, 7.0, -1.0), 0x0000ff);
+    createLabel("F", new THREE.Vector3(0, 2.1, -3.5), 0xff0000);
+    createLabel("Fтертя", new THREE.Vector3(0.5, -2.8, 4.5), 0xffa500);
   });
 
-  // Анімація — тільки обертання циліндра
+  // Анімація — тільки обертання
   const rotationSpeed = 0.02;
 
   renderer.setAnimationLoop(() => {
-    roller.rotation.x += rotationSpeed;
+    roller.rotation.x += rotationSpeed; // лишили лише обертання
     renderer.render(scene, camera);
   });
 
@@ -100,4 +98,3 @@ document.addEventListener("DOMContentLoaded", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 });
-
