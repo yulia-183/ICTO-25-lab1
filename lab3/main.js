@@ -1,24 +1,22 @@
 import * as THREE from "three";
-import { ARButton } from "three/addons/webxr/ARButton.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
-  camera.position.set(0, 2, 5); // ВІДДАЛИЛИ КАМЕРУ
+  camera.position.set(4, 3, 6); // зміщена камера
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.xr.enabled = true;
   document.body.appendChild(renderer.domElement);
 
-  document.body.appendChild(ARButton.createButton(renderer, {
-    requiredFeatures: ['hit-test'],
-    optionalFeatures: ['dom-overlay'],
-    domOverlay: { root: document.body }
-  }));
+  // 🎮 КЕРУВАННЯ КАМЕРОЮ
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
 
   // Текстури
   const textureLoader = new THREE.TextureLoader();
@@ -30,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     new THREE.PlaneGeometry(15, 15),
     new THREE.MeshStandardMaterial({ map: planeTexture })
   );
-  plane.rotation.x = -Math.PI / 9; // менш крутий нахил (20°)
+  plane.rotation.x = -Math.PI / 9;
   plane.position.set(0, -1.5, -2);
   scene.add(plane);
 
@@ -58,12 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
   scene.add(createArrow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -3, 4.3), 0xffa500)); // F тертя
 
   // Освітлення
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.position.set(5, 10, 5);
-  scene.add(dirLight);
+  scene.add(new THREE.DirectionalLight(0xffffff, 1).position.set(5, 10, 5));
   scene.add(new THREE.AmbientLight(0x4d94ff, 0.5));
 
-  // Текстові мітки
+  // Мітки
   const fontLoader = new FontLoader();
   fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
     const createLabel = (text, position, color) => {
@@ -84,13 +80,17 @@ document.addEventListener("DOMContentLoaded", () => {
     createLabel("Fтертя", new THREE.Vector3(0.5, -2.8, 4.5), 0xffa500);
   });
 
-  // Анімація — тільки обертання
+  // Анімація — лише обертання
   const rotationSpeed = 0.02;
 
-  renderer.setAnimationLoop(() => {
-    roller.rotation.x += rotationSpeed; // лишили лише обертання
+  const animate = () => {
+    requestAnimationFrame(animate);
+    roller.rotation.x += rotationSpeed;
+    controls.update(); // оновлення камери
     renderer.render(scene, camera);
-  });
+  };
+
+  animate();
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -98,3 +98,4 @@ document.addEventListener("DOMContentLoaded", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 });
+
