@@ -6,7 +6,7 @@ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 document.addEventListener("DOMContentLoaded", () => {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
-  camera.position.set(0, 2, 5); // ВІДДАЛИЛИ КАМЕРУ
+  camera.position.set(0, 1.6, 3); // початково
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     new THREE.PlaneGeometry(15, 15),
     new THREE.MeshStandardMaterial({ map: planeTexture })
   );
-  plane.rotation.x = -Math.PI / 9; // менш крутий нахил (20°)
-  plane.position.set(0, -1.5, -2);
+  plane.rotation.x = -Math.PI / 6;
+  plane.position.y = -1;
   scene.add(plane);
 
   // Циліндр
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   scene.add(dirLight);
   scene.add(new THREE.AmbientLight(0x4d94ff, 0.5));
 
-  // Текстові мітки
+  // Мітки
   const fontLoader = new FontLoader();
   fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
     const createLabel = (text, position, color) => {
@@ -84,11 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
     createLabel("Fтертя", new THREE.Vector3(0.5, -2.8, 4.5), 0xffa500);
   });
 
-  // Анімація — тільки обертання
+  // Анімація
   const rotationSpeed = 0.02;
+  const rollingSpeed = rollerRadius * rotationSpeed * roller.scale.x;
+  const direction = new THREE.Vector3(0, -Math.sin(Math.PI / 6), Math.cos(Math.PI / 6)).normalize();
 
   renderer.setAnimationLoop(() => {
-    roller.rotation.x += rotationSpeed; // лишили лише обертання
+    roller.rotation.x += rotationSpeed;
+    roller.position.addScaledVector(direction, rollingSpeed);
     renderer.render(scene, camera);
   });
 
